@@ -14,9 +14,9 @@
 <script setup>
 import { QuillEditor, Quill } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
-import ImageResize from 'quill-image-resize-module'
+import 'quill-image-resize-module/image-resize.min.js'
 import { getToken } from "@/utils/auth";
-Quill.register('modules/imageResize', ImageResize)
+// Quill.register('modules/imageResize', ImageResize)
 
 const props = defineProps({
   /* 编辑器的内容 */

@@ -13,6 +13,7 @@
         <el-table v-if="refreshTable" v-loading="loading" :data="tableData" style="width: 100%"
             :default-expand-all="isExpandAll" row-key="id">
             <el-table-column prop="name" label="分类名称" />
+            <el-table-column prop="orderNum" label="排序" />
             <el-table-column prop="enabled" label="状态">
                 <template #default="scope">
                     <el-tag v-if="scope.row.enabled">正常</el-tag>

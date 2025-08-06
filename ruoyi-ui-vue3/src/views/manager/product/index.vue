@@ -49,12 +49,13 @@
                     <el-button link type="primary" icon="View"
                         @click="handleShowDetail(scope.row.detail)">查看</el-button>
                     <el-button v-if="scope.row.parentId == 0" link type="primary" icon="Plus">新增</el-button>
-                    <el-button link type="primary" icon="Delete">删除</el-button>
+                    <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
-
-        <el-dialog :title="title" v-model="open" width="680px" append-to-body>
+        <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum"
+            v-model:limit="queryParams.pageSize" @pagination="getList" />
+        <el-dialog :title="title" v-model="open" width="800px" append-to-body>
             <el-form ref="productRef" :model="form" :rules="rules" label-width="110px">
                 <el-row>
                     <el-col :span="24">
@@ -106,11 +107,11 @@
                     </el-col>
                     <el-col :span="24">
                         <el-form-item label="所属分类" prop="productType">
-                            <el-cascader v-model="typeOption" :options="typeOptions" />
+                            <el-cascader v-model="form.productType" :options="typeOptions" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
-                        <el-form-item label="商品详细介绍" prop="detail">
+                        <el-form-item label="产品详细介绍" prop="detail">
                             <editor v-model="form.detail" :min-height="500" />
                         </el-form-item>
                     </el-col>
@@ -124,7 +125,7 @@
             </template>
         </el-dialog>
 
-        <el-dialog v-model="showDetail" title="商品详情" append-to-body width="800px">
+        <el-dialog v-model="showDetail" title="产品详情" append-to-body width="800px">
             <div v-html="goodsDetail"></div>
         </el-dialog>
     </div>
@@ -135,11 +136,11 @@ import { list } from "@/api/manager/productType";
 import { listProduct, addProduct, updateProduct, delProduct, infoProduct } from "@/api/manager/product";
 const { proxy } = getCurrentInstance();
 const title = ref("");
+const total = ref(0);
 const loading = ref(false);
 const tableData = ref([])
 const open = ref(false)
 const typeOptions = ref([])
-const typeOption = ref([])
 const showDetail = ref(false)
 const goodsDetail = ref()
 const data = reactive({
@@ -160,6 +161,8 @@ const data = reactive({
         name: [{ required: true, message: "产品名称不能为空", trigger: "blur" }],
         price: [{ required: true, message: "当前价格不能为空", trigger: "blur" }],
         productType: [{ required: true, message: "所属分类不能为空", trigger: "blur" }],
+        picUrl: [{ required: true, message: "产品图片不能为空", trigger: "blur" }],
+        gallery: [{ required: true, message: "宣传画廊不能为空", trigger: "blur" }],
     },
 });
 const { queryParams, form, rules } = toRefs(data);
@@ -210,7 +213,6 @@ function reset() {
         productType: undefined,
         detail: undefined
     };
-    typeOption.value = []
     proxy.resetForm("productRef");
 }
 
@@ -250,7 +252,7 @@ function handleUpdate(item) {
     reset();
     infoProduct(item.id).then(res => {
         form.value = res.data;
-        typeOption.value = res.data.productType.split(",")
+        form.value.productType = res.data.productType.split(",")
         open.value = true;
         title.value = "修改产品";
     })
@@ -262,6 +264,7 @@ function getList() {
     q.productType = q.productType?.toString();
     listProduct(q).then(res => {
         tableData.value = res.data.records
+        total.value = res.data.total;
         loading.value = false;
     })
 }
@@ -269,7 +272,7 @@ function getList() {
 function submitForm() {
     proxy.$refs["productRef"].validate(valid => {
         if (valid) {
-            form.value.productType = typeOption.value.toString();
+            form.value.productType = form.value.productType.toString();
             if (form.value.id != undefined) {
                 updateProduct(form.value).then(response => {
                     proxy.$modal.msgSuccess("修改成功");
@@ -285,6 +288,14 @@ function submitForm() {
             }
         }
     });
+}
+function handleDelete(row) {
+    proxy.$modal.confirm('是否确认删除产品名称为"' + row.name + '"的数据项?').then(function () {
+        return delProduct(row.id);
+    }).then(() => {
+        getList();
+        proxy.$modal.msgSuccess("删除成功");
+    }).catch(() => { });
 }
 getList()
 list().then(res => {
