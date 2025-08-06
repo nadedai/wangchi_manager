@@ -1,6 +1,6 @@
 package com.ruoyi.wg.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.yulichang.base.MPJBaseMapper;
 import com.ruoyi.wg.domain.Product;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,5 +11,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 
 @Mapper
-public interface ProductMapper extends BaseMapper<Product> {
+public interface ProductMapper extends MPJBaseMapper<Product> {
 }

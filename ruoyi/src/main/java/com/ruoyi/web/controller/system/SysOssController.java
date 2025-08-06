@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.system;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.util.ObjectUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -54,7 +55,7 @@ public class SysOssController extends BaseController {
      *
      * @param ossIds OSS对象ID串
      */
-    @SaCheckPermission("system:oss:list")
+    @SaIgnore
     @GetMapping("/listByIds/{ossIds}")
     public R<List<SysOssVo>> listByIds(@NotEmpty(message = "主键不能为空")
                                        @PathVariable Long[] ossIds) {

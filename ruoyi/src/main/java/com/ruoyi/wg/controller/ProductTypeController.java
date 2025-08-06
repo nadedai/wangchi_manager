@@ -1,5 +1,6 @@
 package com.ruoyi.wg.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.bean.BeanUtil;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.wg.domain.ProductType;
@@ -24,13 +25,16 @@ public class ProductTypeController {
     private final ProductTypeRepository productTypeRepository;
 
     @GetMapping("/list")
-    public R<List<ProductTypeVo>> list(){
+    @SaIgnore
+    public R<List<ProductTypeVo>> list(ProductType productType){
         List<ProductType> list = productTypeRepository
             .lambdaQuery()
+            .eq(productType.getEnabled() != null, ProductType::getEnabled, productType.getEnabled())
             .orderByAsc(ProductType::getOrderNum)
             .list();
         return R.ok(buildTreeList(list));
     }
+
 
     @GetMapping("/info/{id}")
     public R<ProductType> info(@PathVariable("id") Long id){

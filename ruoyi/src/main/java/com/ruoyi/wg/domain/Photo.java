@@ -1,5 +1,6 @@
 package com.ruoyi.wg.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -39,6 +40,18 @@ public class Photo extends BaseEntity {
      */
     @Column
     private String url;
+
+    /**
+     * 排序
+     */
+    @Column
+    private Integer orderNum;
+
+    @Column
+    private Boolean enabled;
+
+    @TableField(exist = false)
+    private String realUrl;
 
     @TableLogic
     @Column(defaultValue = "0")

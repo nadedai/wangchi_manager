@@ -1,5 +1,6 @@
 package com.ruoyi.wg.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -86,4 +87,10 @@ public class Product extends BaseEntity {
     @TableLogic
     @Column(defaultValue = "0")
     private String delFlag;
+
+    @TableField(exist = false)
+    private String picRealUrl;
+
+    @TableField(exist = false)
+    private String galleryRealUrl;
 }

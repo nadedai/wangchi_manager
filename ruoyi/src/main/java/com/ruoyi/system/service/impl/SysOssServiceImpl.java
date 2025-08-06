@@ -4,9 +4,14 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.crypto.digest.DigestAlgorithm;
+import cn.hutool.crypto.digest.Digester;
+import cn.hutool.crypto.digest.MD5;
+import com.amazonaws.util.Md5Utils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.constant.CacheNames;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -23,8 +28,10 @@ import com.ruoyi.system.domain.SysOss;
 import com.ruoyi.system.domain.bo.SysOssBo;
 import com.ruoyi.system.domain.vo.SysOssVo;
 import com.ruoyi.system.mapper.SysOssMapper;
+import com.ruoyi.system.repository.SysOssRepository;
 import com.ruoyi.system.service.ISysOssService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -50,6 +57,7 @@ import java.util.stream.Collectors;
 public class SysOssServiceImpl implements ISysOssService, OssService {
 
     private final SysOssMapper baseMapper;
+    private final SysOssRepository sysOssRepository;
 
     @Override
     public TableDataInfo<SysOssVo> queryPageList(SysOssBo bo, PageQuery pageQuery) {
@@ -131,38 +139,46 @@ public class SysOssServiceImpl implements ISysOssService, OssService {
         }
     }
 
+    @SneakyThrows
     @Override
     public SysOssVo upload(MultipartFile file) {
+        byte[] bytes = file.getBytes();
+        String md5 = MD5.create().digestHex16(bytes);
+        SysOss oss = getByMd5(md5);
+        if(oss != null){
+            return BeanUtil.copyProperties(oss, SysOssVo.class);
+        }
         String originalfileName = file.getOriginalFilename();
         String suffix = StringUtils.substring(originalfileName, originalfileName.lastIndexOf("."), originalfileName.length());
         OssClient storage = OssFactory.instance();
-        UploadResult uploadResult;
-        try {
-            uploadResult = storage.uploadSuffix(file.getBytes(), suffix, file.getContentType());
-        } catch (IOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+        UploadResult uploadResult = storage.uploadSuffix(bytes, suffix, file.getContentType());
         // 保存文件信息
-        return buildResultEntity(originalfileName, suffix, storage.getConfigKey(), uploadResult);
+        return buildResultEntity(md5, originalfileName, suffix, storage.getConfigKey(), uploadResult);
     }
 
     @Override
     public SysOssVo upload(File file) {
+        String md5 = MD5.create().digestHex16(file);
+        SysOss oss = getByMd5(md5);
+        if(oss != null){
+            return BeanUtil.copyProperties(oss, SysOssVo.class);
+        }
         String originalfileName = file.getName();
         String suffix = StringUtils.substring(originalfileName, originalfileName.lastIndexOf("."), originalfileName.length());
         OssClient storage = OssFactory.instance();
         UploadResult uploadResult = storage.uploadSuffix(file, suffix);
         // 保存文件信息
-        return buildResultEntity(originalfileName, suffix, storage.getConfigKey(), uploadResult);
+        return buildResultEntity(md5, originalfileName, suffix, storage.getConfigKey(), uploadResult);
     }
 
-    private SysOssVo buildResultEntity(String originalfileName, String suffix, String configKey, UploadResult uploadResult) {
+    private SysOssVo buildResultEntity(String md5, String originalfileName, String suffix, String configKey, UploadResult uploadResult) {
         SysOss oss = new SysOss();
         oss.setUrl(uploadResult.getUrl());
         oss.setFileSuffix(suffix);
         oss.setFileName(uploadResult.getFilename());
         oss.setOriginalName(originalfileName);
         oss.setService(configKey);
+        oss.setMd5(md5);
         baseMapper.insert(oss);
         SysOssVo sysOssVo = BeanUtil.toBean(oss, SysOssVo.class);
         return this.matchingUrl(sysOssVo);
@@ -194,5 +210,9 @@ public class SysOssServiceImpl implements ISysOssService, OssService {
             oss.setUrl(storage.getPrivateUrl(oss.getFileName(), 120));
         }
         return oss;
+    }
+
+    private SysOss getByMd5(String md5){
+        return sysOssRepository.lambdaQuery().eq(SysOss::getMd5, md5).one();
     }
 }

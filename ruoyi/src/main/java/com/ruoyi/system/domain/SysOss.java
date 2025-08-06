@@ -47,4 +47,5 @@ public class SysOss extends BaseEntity {
      */
     private String service;
 
+    private String md5;
 }

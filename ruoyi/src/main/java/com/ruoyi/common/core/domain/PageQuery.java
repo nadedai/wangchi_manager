@@ -55,13 +55,17 @@ public class PageQuery implements Serializable {
     public static final int DEFAULT_PAGE_SIZE = Integer.MAX_VALUE;
 
     public <T> Page<T> build() {
+        return build(false);
+    }
+
+    public <T> Page<T> build(boolean skipCheck) {
         Integer pageNum = ObjectUtil.defaultIfNull(getPageNum(), DEFAULT_PAGE_NUM);
         Integer pageSize = ObjectUtil.defaultIfNull(getPageSize(), DEFAULT_PAGE_SIZE);
         if (pageNum <= 0) {
             pageNum = DEFAULT_PAGE_NUM;
         }
         Page<T> page = new Page<>(pageNum, pageSize);
-        List<OrderItem> orderItems = buildOrderItem();
+        List<OrderItem> orderItems = buildOrderItem(skipCheck);
         if (CollUtil.isNotEmpty(orderItems)) {
             page.addOrder(orderItems);
         }
@@ -77,11 +81,14 @@ public class PageQuery implements Serializable {
      * {isAsc:"desc",orderByColumn:"id,createTime"} order by id desc,create_time desc
      * {isAsc:"asc,desc",orderByColumn:"id,createTime"} order by id asc,create_time desc
      */
-    private List<OrderItem> buildOrderItem() {
+    private List<OrderItem> buildOrderItem(boolean skipCheck) {
         if (StringUtils.isBlank(orderByColumn) || StringUtils.isBlank(isAsc)) {
             return null;
         }
-        String orderBy = SqlUtil.escapeOrderBySql(orderByColumn);
+        String orderBy = orderByColumn;
+        if(!skipCheck){
+            orderBy = SqlUtil.escapeOrderBySql(orderByColumn);
+        }
         orderBy = StringUtils.toUnderScoreCase(orderBy);
 
         // 兼容前端排序类型
