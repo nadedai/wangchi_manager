@@ -25,9 +25,9 @@ public class AddressUtils {
         }
         // 内网不查询
         ip = StringUtils.contains(ip, "0:0:0:0:0:0:0:1") ? "127.0.0.1" : HtmlUtil.cleanHtmlTag(ip);
-        if (NetUtil.isInnerIP(ip)) {
-            return "内网IP";
-        }
+//        if (NetUtil.isInnerIP(ip)) {
+//            return "内网IP";
+//        }
         return RegionUtils.getCityInfo(ip);
     }
 }
