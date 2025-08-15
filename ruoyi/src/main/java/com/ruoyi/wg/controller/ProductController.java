@@ -1,6 +1,7 @@
 package com.ruoyi.wg.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.toolkit.MPJWrappers;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -51,7 +52,12 @@ public class ProductController {
     @PostMapping
     public R<Void> add(@RequestBody Product productType){
         Assert.isTrue(!productRepository.findByGoodsSn(productType.getGoodsSn()).isPresent(), "产品编号已存在");
+       // 保存产品属性
         productRepository.save(productType);
+        if(CollUtil.isNotEmpty(productType.getAttrs())){
+            productType.getAttrs().forEach(e->e.setProductId(productType.getId()));
+            productAttrRepository.saveBatch(productType.getAttrs());
+        }
         return R.ok();
     }
 
