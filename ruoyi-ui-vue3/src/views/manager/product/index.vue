@@ -143,7 +143,7 @@
         </el-dialog>
 
         <el-dialog :title="titleAttr" v-model="openAttr" width="400px" append-to-body>
-            <el-form>
+            <el-form ref="productAttrRef" :model="formAttr" :rules="attrRules">
 
             </el-form>
         </el-dialog>
