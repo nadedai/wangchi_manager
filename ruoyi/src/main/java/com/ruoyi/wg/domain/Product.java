@@ -10,6 +10,8 @@ import com.ruoyi.common.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * @author hht
  * @date 2025/7/31 12:11
@@ -93,4 +95,7 @@ public class Product extends BaseEntity {
 
     @TableField(exist = false)
     private String galleryRealUrl;
+
+    @TableField(exist = false)
+    private List<ProductAttr> attrs;
 }

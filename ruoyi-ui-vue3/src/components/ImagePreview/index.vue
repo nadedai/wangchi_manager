@@ -64,7 +64,7 @@ watch(realSrc, (val) => {
   val.then(r => {
     if (r.indexOf("http") == -1) {
       listByIds(r).then((res) => {
-        realSrcUrl.value = res.data[0].url;
+        realSrcUrl.value = res.data[0].url + '?x-oss-process=image/resize,p_20';
       });
 
     }

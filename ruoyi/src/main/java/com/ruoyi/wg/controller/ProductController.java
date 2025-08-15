@@ -8,10 +8,14 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.service.OssService;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.wg.domain.Product;
+import com.ruoyi.wg.domain.ProductAttr;
+import com.ruoyi.wg.repository.ProductAttrRepository;
 import com.ruoyi.wg.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author hht
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
     private final ProductRepository productRepository;
     private final OssService ossService;
+    private final ProductAttrRepository productAttrRepository;
 
     @GetMapping("/list")
     @SaIgnore
@@ -60,7 +65,9 @@ public class ProductController {
     @GetMapping("/info/{id}")
     @SaIgnore
     public R<Product> info(@PathVariable Long id){
-        return R.ok(productRepository.getById(id));
+        Product product = productRepository.getById(id);
+        product.setAttrs(productAttrRepository.listByProductId(id));
+        return R.ok(product);
     }
 
     @DeleteMapping("/{id}")

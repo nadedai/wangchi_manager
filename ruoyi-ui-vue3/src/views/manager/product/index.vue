@@ -111,6 +111,23 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
+                        <el-form-item label="产品参数">
+                            <el-button type="primary" plain @click="handleAddAttr">添加</el-button>
+                            <el-table :data="form.attrs" style="width: 100%">
+                                <el-table-column prop="attrName" label="参数名" />
+                                <el-table-column prop="attrValue" label="参数值" />
+                                <el-table-column label="操作" min-width="120">
+                                    <template #default>
+                                        <el-button link type="primary" size="small" @click="handleClick">
+                                            删除
+                                        </el-button>
+                                        <el-button link type="primary" size="small">编辑</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
                         <el-form-item label="产品详细介绍" prop="detail">
                             <editor v-model="form.detail" :min-height="500" />
                         </el-form-item>
@@ -125,6 +142,12 @@
             </template>
         </el-dialog>
 
+        <el-dialog :title="titleAttr" v-model="openAttr" width="400px" append-to-body>
+            <el-form>
+
+            </el-form>
+        </el-dialog>
+
         <el-dialog v-model="showDetail" title="产品详情" append-to-body width="800px">
             <div v-html="goodsDetail"></div>
         </el-dialog>
@@ -136,15 +159,20 @@ import { list } from "@/api/manager/productType";
 import { listProduct, addProduct, updateProduct, delProduct, infoProduct } from "@/api/manager/product";
 const { proxy } = getCurrentInstance();
 const title = ref("");
+const titleAttr = ref("");
 const total = ref(0);
 const loading = ref(false);
 const tableData = ref([])
 const open = ref(false)
+const openAttr = ref(false)
 const typeOptions = ref([])
 const showDetail = ref(false)
 const goodsDetail = ref()
 const data = reactive({
     form: {
+
+    },
+    formAttr: {
 
     },
     queryParams: {
@@ -164,6 +192,10 @@ const data = reactive({
         picUrl: [{ required: true, message: "产品图片不能为空", trigger: "blur" }],
         gallery: [{ required: true, message: "宣传画廊不能为空", trigger: "blur" }],
     },
+    attrRules: {
+        attrName: [{ required: true, message: "产品编号不能为空", trigger: "blur" }],
+        attrValue: [{ required: true, message: "产品名称不能为空", trigger: "blur" }],
+    }
 });
 const { queryParams, form, rules } = toRefs(data);
 
@@ -297,6 +329,12 @@ function handleDelete(row) {
         proxy.$modal.msgSuccess("删除成功");
     }).catch(() => { });
 }
+
+function handleAddAttr() {
+    titleAttr.value = '添加产品参数'
+    openAttr.value = true
+}
+
 getList()
 list().then(res => {
     buildTypeOptions(res.data)
