@@ -117,11 +117,12 @@
                                 <el-table-column prop="attrName" label="参数名" />
                                 <el-table-column prop="attrValue" label="参数值" />
                                 <el-table-column label="操作" min-width="120">
-                                    <template #default>
-                                        <el-button link type="primary" size="small" @click="handleClick">
+                                    <template #default="scope">
+                                        <el-button link type="primary" size="small" @click="handleAttrDel(scope.row)">
                                             删除
                                         </el-button>
-                                        <el-button link type="primary" size="small">编辑</el-button>
+                                        <el-button link type="primary" size="small"
+                                            @click="handleAttrEdit(scope.row)">编辑</el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -144,8 +145,25 @@
 
         <el-dialog :title="titleAttr" v-model="openAttr" width="400px" append-to-body>
             <el-form ref="productAttrRef" :model="formAttr" :rules="attrRules">
-
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="参数名" prop="attrName">
+                            <el-input v-model="formAttr.attrName" placeholder="请输入参数名" />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-form-item label="参数值" prop="attrValue">
+                            <el-input v-model="formAttr.attrValue" placeholder="请输入参数值" />
+                        </el-form-item>
+                    </el-col>
+                </el-row>
             </el-form>
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button type="primary" @click="submitAttr">确 定</el-button>
+                    <el-button @click="cancelAttr">取 消</el-button>
+                </div>
+            </template>
         </el-dialog>
 
         <el-dialog v-model="showDetail" title="产品详情" append-to-body width="800px">
@@ -193,11 +211,11 @@ const data = reactive({
         gallery: [{ required: true, message: "宣传画廊不能为空", trigger: "blur" }],
     },
     attrRules: {
-        attrName: [{ required: true, message: "产品编号不能为空", trigger: "blur" }],
-        attrValue: [{ required: true, message: "产品名称不能为空", trigger: "blur" }],
+        attrName: [{ required: true, message: "参数名不能为空", trigger: "blur" }],
+        attrValue: [{ required: true, message: "参数值名称不能为空", trigger: "blur" }],
     }
 });
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form, formAttr, rules, attrRules } = toRefs(data);
 
 function handleShowDetail(detail) {
     console.log('handleShowDetail');
@@ -243,9 +261,20 @@ function reset() {
         picUrl: undefined,
         gallery: undefined,
         productType: undefined,
-        detail: undefined
+        detail: undefined,
+        attrs: []
     };
     proxy.resetForm("productRef");
+}
+
+function resetAttr() {
+    formAttr.value = {
+        attrName: undefined,
+        attrValue: undefined
+    };
+
+    console.log('formAttr', formAttr.value)
+    proxy.resetForm("productAttrRef");
 }
 
 function buildTypeOptions(types) {
@@ -271,12 +300,60 @@ function handleAdd() {
     title.value = "添加产品"
     open.value = true
     reset();
+    // form.value.attr = [{ attrName: "尺寸", attrValue: "1*1*1" }]
 }
 
 /** 取消按钮 */
 function cancel() {
     open.value = false;
     reset();
+}
+
+function cancelAttr() {
+    openAttr.value = false
+    resetAttr()
+}
+
+function submitAttr() {
+    proxy.$refs["productAttrRef"].validate(valid => {
+        if (valid) {
+            if (titleAttr.value.includes("添加")) {
+                form.value.attrs = [...form.value.attrs, { ...formAttr.value }];
+                openAttr.value = false;
+            } else {
+                let len = form.value.attrs.length
+                let i = delAttr(formAttr.value.original)
+                form.value.attrs = [...form.value.attrs.slice(0, i), { ...formAttr.value }, ...form.value.attrs.slice(i, len)];
+                openAttr.value = false;
+            }
+        }
+    })
+}
+
+function handleAttrEdit(row) {
+    titleAttr.value = '编辑产品参数'
+    formAttr.value.attrName = row.attrName
+    formAttr.value.attrValue = row.attrValue
+    formAttr.value.original = row
+    openAttr.value = true
+}
+
+function handleAttrDel(row) {
+    proxy.$modal.confirm('是否确认删除参数名称为"' + row.attrName + '"的数据项?').then(
+        () => {
+            delAttr(row)
+        }
+    ).catch(() => { });
+}
+
+function delAttr(row) {
+    for (let i = 0; i < form.value.attrs.length; i++) {
+        if (form.value.attrs[i].attrName == row.attrName) {
+            form.value.attrs.splice(i, 1)
+            form.value.attrs = [...form.value.attrs]
+            return i;
+        }
+    }
 }
 
 function handleUpdate(item) {
@@ -333,6 +410,7 @@ function handleDelete(row) {
 function handleAddAttr() {
     titleAttr.value = '添加产品参数'
     openAttr.value = true
+    resetAttr()
 }
 
 getList()

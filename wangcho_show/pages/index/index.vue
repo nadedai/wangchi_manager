@@ -2,17 +2,8 @@
 	<view class="container">
 		<view class="uni-margin-wrap">
 			<swiper style="height: 100vh; width: 100%;" class="swiper" autoplay="true" circular="true">
-				<swiper-item>
-					<image style="height: 100%; width: 100%;" mode="aspectFill" src="/static/swiper/1.jpg" />
-				</swiper-item>
-				<swiper-item>
-					<image style="height: 100%; width: 100%;" mode="aspectFill" src="/static/swiper/2.jpg" />
-				</swiper-item>
-				<swiper-item>
-					<image style="height: 100%; width: 100%;" mode="aspectFill" src="/static/swiper/3.jpg" />
-				</swiper-item>
-				<swiper-item>
-					<image style="height: 100%; width: 100%;" mode="aspectFill" src="/static/swiper/4.jpg" />
+				<swiper-item v-for="(item, index) in imgs">
+					<image style="height: 100%; width: 100%;" mode="aspectFill" :src="item" :id="index" />
 				</swiper-item>
 			</swiper>
 			<div class="centered-bottom" @click="gogo">
@@ -22,24 +13,27 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
+<script setup>
+	import { getSwiperPhoto } from '@/api/api.js'
+	import { ref } from 'vue'
 
-			}
-		},
-		onLoad() {
+	const imgs = ref([])
 
-		},
-		methods: {
-			gogo() {
-				uni.switchTab({
-					url: '/pages/project/product/index'
-				});
-			}
-		}
+	function gogo() {
+		uni.switchTab({
+			url: '/pages/project/product/index'
+		});
 	}
+
+	function getImgs() {
+		getSwiperPhoto().then(res => {
+			if (res) {
+				imgs.value = res.data
+			}
+		})
+	}
+
+	getImgs()
 </script>
 
 <style>

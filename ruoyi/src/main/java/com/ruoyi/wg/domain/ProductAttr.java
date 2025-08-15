@@ -28,8 +28,4 @@ public class ProductAttr extends BaseEntity {
 
     @Column
     private String attrValue;
-
-    @TableLogic
-    @Column(defaultValue = "0")
-    private String delFlag;
 }

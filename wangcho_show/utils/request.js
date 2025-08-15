@@ -1,4 +1,5 @@
 const baseUrl = 'https://hhttplay.top/prod-api'
+// const baseUrl = 'http://localhost:8080'
 
 export default function request(options) {
 	return new Promise((resolve, reject) => {

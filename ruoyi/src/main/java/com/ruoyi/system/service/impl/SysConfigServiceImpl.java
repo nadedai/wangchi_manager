@@ -62,6 +62,11 @@ public class SysConfigServiceImpl implements ISysConfigService, ConfigService {
         return baseMapper.selectById(configId);
     }
 
+    @Override
+    public SysConfig selectByKey(String configKey){
+        return baseMapper.selectOne(new LambdaQueryWrapper<SysConfig>().eq(SysConfig::getConfigKey, configKey));
+    }
+
     /**
      * 根据键名查询参数配置信息
      *
