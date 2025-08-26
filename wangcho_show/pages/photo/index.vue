@@ -2,7 +2,7 @@
 	<view>
 		<u-loading-page :loading="pageLoading"></u-loading-page>
 		<u-sticky bgColor="#fff">
-			<image style="height: 30vh; width: 100%;" mode="aspectFill" src="/static/photo/2.jpg" />
+			<image style="height: 30vh; width: 100%;" mode="aspectFill" src="https://wgbucket.oss-cn-beijing.aliyuncs.com/2025/08/18/dfdb5ced872b4155aacbf3b80401d789.jpg" />
 			<u-tabs v-if="!pageLoading" :list="productList" @change="photoTypeChange" :lineColor="'#606266'" :activeStyle="{
 		        color: '#303133',
 		        fontWeight: 'bold',

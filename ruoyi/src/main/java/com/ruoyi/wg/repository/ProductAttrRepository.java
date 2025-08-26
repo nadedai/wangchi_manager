@@ -6,6 +6,7 @@ import com.ruoyi.wg.mapper.ProductAttrMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author hht
@@ -17,5 +18,9 @@ import java.util.List;
 public class ProductAttrRepository extends ServiceImpl<ProductAttrMapper, ProductAttr> {
     public List<ProductAttr> listByProductId(Long productId){
        return lambdaQuery().eq(ProductAttr::getProductId, productId).list();
+    }
+
+    public boolean removeByProductId(Long productId){
+        return removeBatchByIds(lambdaQuery().eq(ProductAttr::getProductId, productId).list().stream().map(ProductAttr::getId).collect(Collectors.toList()));
     }
 }

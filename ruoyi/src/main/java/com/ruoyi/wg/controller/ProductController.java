@@ -13,9 +13,11 @@ import com.ruoyi.wg.domain.ProductAttr;
 import com.ruoyi.wg.repository.ProductAttrRepository;
 import com.ruoyi.wg.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -55,6 +57,7 @@ public class ProductController {
        // 保存产品属性
         productRepository.save(productType);
         if(CollUtil.isNotEmpty(productType.getAttrs())){
+            validAttr(productType.getAttrs());
             productType.getAttrs().forEach(e->e.setProductId(productType.getId()));
             productAttrRepository.saveBatch(productType.getAttrs());
         }
@@ -62,10 +65,23 @@ public class ProductController {
     }
 
     @PutMapping
+    @Transactional(rollbackFor = Exception.class)
     public R<Void> update(@RequestBody Product productType){
         Assert.isTrue(!productRepository.findByGoodsSn(productType.getGoodsSn(), productType.getId()).isPresent(), "产品编号已存在");
+        if(CollUtil.isNotEmpty(productType.getAttrs())){
+            validAttr(productType.getAttrs());
+            productAttrRepository.removeByProductId(productType.getId());
+            productType.getAttrs().forEach(e->e.setProductId(productType.getId()));
+            productAttrRepository.saveBatch(productType.getAttrs());
+        }
         productRepository.updateById(productType);
         return R.ok();
+    }
+
+    private void validAttr(List<ProductAttr> attrs){
+        Assert.isTrue(attrs.stream()
+            .noneMatch(item -> Collections.frequency(attrs, item.getAttrName()) > 1), "重复产品参数名"
+        );
     }
 
     @GetMapping("/info/{id}")
@@ -73,7 +89,7 @@ public class ProductController {
     public R<Product> info(@PathVariable Long id){
         Product product = productRepository.getById(id);
         product.setAttrs(productAttrRepository.listByProductId(id));
-        return R.ok(product);
+        return R.ok(fullUrl(product));
     }
 
     @DeleteMapping("/{id}")

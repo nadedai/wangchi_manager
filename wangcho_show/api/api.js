@@ -45,3 +45,17 @@ export function listOssByIds(ossId) {
 		method: 'GET'
 	})
 }
+
+export function getSwiperPhoto() {
+	return request({
+		url: '/index/swiperPhoto',
+		method: 'GET',
+	})
+}
+
+export function getPhotoCover() {
+	return request({
+		url: '/index/photoCover',
+		method: 'GET',
+	})
+}
