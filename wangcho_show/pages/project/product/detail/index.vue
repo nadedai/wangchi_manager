@@ -11,6 +11,7 @@
 			<view style="margin: 8px;">{{data.name}}</view>
 		</view>
 		<u-gap height="6" bgColor="rgb(234 234 234)" />
+
 		<u-popup closeable :show="popShow" @close="popShow = false" duration="100">
 			<view style="height: 60vh;padding: 20px;">
 				<view style="font-size: 18px;font-weight: 600;margin-bottom: 15px;">产品参数</view>
@@ -26,22 +27,21 @@
 			</view>
 		</u-popup>
 
-		<view class="container">
-			<view class="attr-container">
-				<div class="prefix-text"><u-icon name="order" color="gray" size="24" /></div>
-				<div class="scroll-container">
-					<div class="grid">
-						<div class="grid-item" v-for="(item,index) in data.attrs">
-							<div class="item-number">{{item.attrValue}}</div>
-							<div class="item-text">{{item.attrName}}</div>
-						</div>
+		<view class="attr-container" v-if="data.attrs.length > 0">
+			<div class="prefix-text"><u-icon name="order" color="gray" size="24" /></div>
+			<div class="scroll-container">
+				<div class="grid">
+					<div class="grid-item" v-for="(item,index) in data.attrs">
+						<div class="item-number">{{item.attrValue}}</div>
+						<div class="item-text">{{item.attrName}}</div>
 					</div>
 				</div>
-				<div class="detail-btn">
-					<u-icon name="arrow-right" color="gray" size="15" @click="popShow = true" />
-				</div>
-			</view>
+			</div>
+			<div class="detail-btn">
+				<u-icon name="arrow-right" color="gray" size="15" @click="popShow = true" />
+			</div>
 		</view>
+
 		<u-gap height="6" bgColor="rgb(234 234 234)" />
 		<u-parse :content="data?.detail"></u-parse>
 		<view class="tab-bar">

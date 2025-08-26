@@ -300,6 +300,7 @@ function handleAdd() {
     title.value = "添加产品"
     open.value = true
     reset();
+    // form.value.attr = [{ attrName: "尺寸", attrValue: "1*1*1" }]
 }
 
 /** 取消按钮 */
