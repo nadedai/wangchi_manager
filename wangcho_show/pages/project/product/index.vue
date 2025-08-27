@@ -84,9 +84,6 @@
 	function getData(needClear) {
 		loadStatus.value = 'loading'
 		productList(query.value).then(async res => {
-			// if (needClear) {
-			// 	proxy.refs.uWaterfall.clear()
-			// }
 			nextTick(() => {
 				productData.value.push(...res.data.records)
 			})

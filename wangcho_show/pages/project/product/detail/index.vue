@@ -3,7 +3,7 @@
 		<u-loading-page :loading="pageLoading"></u-loading-page>
 		<swiper indicator-dots="true" indicator-active-color="#808080" style="height: 400px; width: 100%;" class="swiper" circular="true">
 			<swiper-item v-for="item in imgs">
-				<image style="height: 100%; width: 100%;" mode="aspectFill" :src="item.url" @click="previewImage(item.url)" />
+				<image style="height: 100%; width: 100%;" mode="aspectFill" :src="item" @click="previewImage" />
 			</swiper-item>
 		</swiper>
 		<view>
@@ -13,17 +13,19 @@
 		<u-gap height="6" bgColor="rgb(234 234 234)" />
 
 		<u-popup closeable :show="popShow" @close="popShow = false" duration="100">
-			<view style="height: 60vh;padding: 20px;">
-				<view style="font-size: 18px;font-weight: 600;margin-bottom: 15px;">产品参数</view>
-				<u-list style="height: 80%;">
-					<u-list-item v-for="(item, index) in data.attrs" :key="index">
-						<div class="spec-item">
-							<div class="spec-name">{{item.attrName}}</div>
-							<div class="spec-value">{{item.attrValue}}</div>
-						</div>
-					</u-list-item>
-				</u-list>
-				<u-button type="primary" text="确定" color="#333" @click="popShow = false"></u-button>
+			<view class="pop-container">
+				<view class="pop-conent">
+					<view style="font-size: 18px;font-weight: 600;margin-bottom: 15px;">产品参数</view>
+					<u-list>
+						<u-list-item v-for="(item, index) in data.attrs" :key="index">
+							<div class="spec-item">
+								<div class="spec-name">{{item.attrName}}</div>
+								<div class="spec-value">{{item.attrValue}}</div>
+							</div>
+						</u-list-item>
+					</u-list>
+				</view>
+				<u-button class="pop-button" type="primary" text="确定" color="#333" @click="popShow = false"></u-button>
 			</view>
 		</u-popup>
 
@@ -44,19 +46,23 @@
 
 		<u-gap height="6" bgColor="rgb(234 234 234)" />
 		<u-parse :content="data?.detail"></u-parse>
-		<view class="tab-bar">
+		<view class="tab-bar" v-if="pageLoading==false">
 			<view class="item-container">
-				<view class="item">
+				<!-- 	<view class="item">
 					<u-icon name="chat" color="gray" size="24" />
 					<view>客服</view>
-				</view>
-
-				<view class="item">
+					<button class="share-btn" open-type="contact"></button>
+				</view> -->
+				<view class="item" open-type="share" @click="onShare">
 					<u-icon name="share" color="gray" size="24" />
 					<view>分享</view>
+					<button class="share-btn" open-type="share"></button>
 				</view>
 			</view>
-
+			<view class="btn">
+				立即咨询
+				<button class="share-btn" open-type="contact"></button>
+			</view>
 		</view>
 	</view>
 
@@ -64,7 +70,7 @@
 
 <script setup>
 	import { ref } from 'vue'
-	import { onLoad } from '@dcloudio/uni-app';
+	import { onLoad, onShareAppMessage } from '@dcloudio/uni-app';
 	import { productInfo, listOssByIds } from '@/api/api.js'
 	const imgs = ref([])
 	const data = ref({})
@@ -79,6 +85,14 @@
 		})
 	}
 
+	onShareAppMessage(() => {
+		return {
+			title: data.value.name,
+			path: `/pages/project/product/detail/index?id=${data.value.id}`,
+			imageUrl: data.value.picRealUrl
+		}
+	})
+
 	onLoad((options) => {
 		const id = options.id;
 		getInfo(id)
@@ -86,7 +100,7 @@
 
 	function previewImage(url) {
 		uni.previewImage({
-			urls: imgs.value.map(r => r.url) // 需要预览的图片http链接列表
+			urls: imgs.value
 		})
 	}
 </script>
@@ -99,6 +113,8 @@
 		right: 0px;
 		border: 1px solid rgb(234 234 234);
 		background-color: white;
+		display: flex;
+		justify-content: space-between
 	}
 
 	.tab-bar .item-container {
@@ -108,12 +124,33 @@
 	}
 
 	.tab-bar .item {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		color: gray;
 		font-size: 12px;
 		width: 28px;
-		margin-left: 8px;
+		margin-left: 16px;
+		margin-top: 5px;
+	}
+
+	.tab-bar .btn {
+		position: relative;
+		background-color: #000;
+		color: white;
+		border: none;
+		border-radius: 24px;
+		padding: 8px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		font-size: 15px;
+		font-weight: 500;
+		transition: background-color 0.2s;
+		text-align: center;
+		width: 70%;
+		margin: 10px;
+		margin-bottom: 6px;
+		margin-left: 0px;
 	}
 
 	.product-card {
@@ -241,14 +278,41 @@
 
 	.spec-name {
 		flex: 0 0 40%;
-		padding: 18px 25px;
+		padding: 10px;
 		font-weight: 500;
 		color: #666;
 	}
 
 	.spec-value {
 		flex: 1;
-		padding: 18px 25px;
+		padding: 10px;
 		color: #333;
+	}
+
+	.pop-container {
+		height: 70vh;
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.pop-conent {
+		flex: 1;
+		height: 80%;
+	}
+
+	.pop-button {
+		text-align: center;
+	}
+
+	.share-btn {
+		position: absolute;
+		/* 绝对定位 */
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		/* 关键：让按钮完全透明 */
 	}
 </style>

@@ -2,7 +2,7 @@
 	<view>
 		<u-loading-page :loading="pageLoading"></u-loading-page>
 		<u-sticky bgColor="#fff">
-			<image style="height: 30vh; width: 100%;" mode="aspectFill" src="https://wgbucket.oss-cn-beijing.aliyuncs.com/2025/08/18/dfdb5ced872b4155aacbf3b80401d789.jpg" />
+			<image style="height: 30vh; width: 100%;" mode="aspectFill" :src="photoCoverImg" />
 			<u-tabs v-if="!pageLoading" :list="productList" @change="photoTypeChange" :lineColor="'#606266'" :activeStyle="{
 		        color: '#303133',
 		        fontWeight: 'bold',
@@ -28,12 +28,15 @@
 	import imgListView from './components/img-list-view.vue'
 	import { ref, getCurrentInstance } from 'vue'
 	import { onLoad, onReachBottom } from '@dcloudio/uni-app'
-	import { photoTypeList, photoList, listOssByIds } from '@/api/api.js'
+	import { photoTypeList, photoList, listOssByIds, getPhotoCover } from '@/api/api.js'
 	const proxy = getCurrentInstance()
 	const curItem = ref()
 	const productList = ref([])
 	const photoData = ref([])
+	const photoCoverImg = ref()
 	const loadStatus = ref('loadmore')
+
+
 	const q = ref({
 		pageNum: 1,
 		pageSize: 10,
@@ -80,6 +83,12 @@
 		})
 	}
 
+	function getPhotoCoverImg() {
+		getPhotoCover().then(res => {
+			photoCoverImg.value = res.msg
+		})
+	}
+
 	onReachBottom(() => {
 		if (loadStatus.value === 'nomore') {
 			return
@@ -89,6 +98,7 @@
 		getPhotoList();
 	})
 	getPhotoType()
+	getPhotoCoverImg()
 </script>
 
 <style scoped lang="scss">
