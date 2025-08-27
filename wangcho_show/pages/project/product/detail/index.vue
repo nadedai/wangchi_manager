@@ -27,7 +27,7 @@
 			</view>
 		</u-popup>
 
-		<view class="attr-container" v-if="data.attrs.length > 0">
+		<view class="attr-container" v-if="data.attrs && data.attrs.length > 0">
 			<div class="prefix-text"><u-icon name="order" color="gray" size="24" /></div>
 			<div class="scroll-container">
 				<div class="grid">

@@ -100,7 +100,7 @@ public class ProductController {
 
     private Product fullUrl(Product product){
         product.setPicRealUrl(ossService.selectUrlByIds(product.getPicUrl()));
-        product.setGalleryRealUrl(ossService.selectUrlByIds(product.getGalleryRealUrl()));
+        product.setGalleryRealUrl(ossService.selectUrlByIds(product.getGallery()));
         return product;
     }
 }
