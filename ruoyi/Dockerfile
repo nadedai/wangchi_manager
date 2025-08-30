@@ -1,14 +1,14 @@
-FROM anapsix/alpine-java:8_server-jre_unlimited
+ARG BASE_IMAGE=eclipse-temurin:8-jre-alpine
+FROM ${BASE_IMAGE}
 
-MAINTAINER Lion Li
-
-RUN mkdir -p /ruoyi/server/logs \
-    /ruoyi/server/temp \
-    /ruoyi/skywalking/agent
-
-WORKDIR /ruoyi/server
+RUN mkdir -p /app/logs
+RUN mkdir -p /app/config
+WORKDIR /app
 
 ENV SERVER_PORT=8080
+
+VOLUME /app/logs
+VOLUME /app/config
 
 EXPOSE ${SERVER_PORT}
 
@@ -17,7 +17,6 @@ ADD ./ruoyi.jar ./app.jar
 ENTRYPOINT ["java", \
             "-Djava.security.egd=file:/dev/./urandom", \
             "-Dserver.port=${SERVER_PORT}", \
-            # 应用名称 如果想区分集群节点监控 改成不同的名称即可
-#            "-Dskywalking.agent.service_name=ruoyi-server", \
-#            "-javaagent:/ruoyi/skywalking/agent/skywalking-agent.jar", \
-            "-jar", "app.jar"]
+            "-jar", "app.jar", \
+            "--spring.config.additional-location=./config/"
+            ]

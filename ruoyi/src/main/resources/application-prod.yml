@@ -1,6 +1,5 @@
 --- # 临时文件存储位置 避免临时文件被系统清理报错
 spring.servlet.multipart.location: /ruoyi/server/temp
-
 --- # 监控中心配置
 spring.boot.admin.client:
   # 增加客户端开关
@@ -10,7 +9,6 @@ spring.boot.admin.client:
     service-host-type: IP
   username: ruoyi
   password: 123456
-
 --- # xxl-job 配置
 xxl.job:
   # 执行器开关
@@ -32,7 +30,6 @@ xxl.job:
     logpath: ./logs/xxl-job
     # 执行器日志文件保存天数：大于3生效
     logretentiondays: 30
-
 --- # 数据源配置
 spring:
   datasource:
@@ -52,37 +49,17 @@ spring:
           driverClassName: com.mysql.cj.jdbc.Driver
           # jdbc 所有参数配置参考 https://lionli.blog.csdn.net/article/details/122018562
           # rewriteBatchedStatements=true 批处理优化 大幅提升批量插入更新删除性能(对数据库有性能损耗 使用批量操作应考虑性能问题)
-          url: jdbc:mysql://localhost:3306/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true
+          url: jdbc:mysql://192.168.1.7:40002/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true
           username: root
-          password: admin
+          password: root
         # 从库数据源
         slave:
           lazy: true
           type: ${spring.datasource.type}
           driverClassName: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:3306/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true
-          username:
-          password:
-#        oracle:
-#          type: ${spring.datasource.type}
-#          driverClassName: oracle.jdbc.OracleDriver
-#          url: jdbc:oracle:thin:@//localhost:1521/XE
-#          username: ROOT
-#          password: root
-#          hikari:
-#            connectionTestQuery: SELECT 1 FROM DUAL
-#        postgres:
-#          type: ${spring.datasource.type}
-#          driverClassName: org.postgresql.Driver
-#          url: jdbc:postgresql://localhost:5432/postgres?useUnicode=true&characterEncoding=utf8&useSSL=true&autoReconnect=true&reWriteBatchedInserts=true
-#          username: root
-#          password: root
-#        sqlserver:
-#          type: ${spring.datasource.type}
-#          driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-#          url: jdbc:sqlserver://localhost:1433;DatabaseName=tempdb;SelectMethod=cursor;encrypt=false;rewriteBatchedStatements=true
-#          username: SA
-#          password: root
+          url: jdbc:mysql://192.168.1.7:40002/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true
+          username: root
+          password: root
       hikari:
         # 最大连接池数量
         maxPoolSize: 20
@@ -100,14 +77,13 @@ spring:
         connectionTestQuery: SELECT 1
         # 多久检查一次连接的活性
         keepaliveTime: 30000
-
 --- # redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
 spring:
   redis:
     # 地址
-    host: localhost
+    host: 192.168.1.7
     # 端口，默认为6379
-    port: 6379
+    port: 40003
     # 数据库索引
     database: 0
     # 密码(如没有密码请注释掉)
@@ -160,7 +136,6 @@ mail:
   timeout: 0
   # Socket连接超时值，单位毫秒，缺省值不超时
   connectionTimeout: 0
-
 --- # sms 短信 支持 阿里云 腾讯云 云片 等等各式各样的短信服务商
 # https://wind.kim/doc/start 文档地址 各个厂商可同时使用
 sms:
