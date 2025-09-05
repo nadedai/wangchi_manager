@@ -86,6 +86,9 @@ public class Product extends BaseEntity {
     @Column
     private Boolean isNew;
 
+    @Column(defaultValue = "9999")
+    private Integer orderNum;
+
     @TableLogic
     @Column(defaultValue = "0")
     private String delFlag;
