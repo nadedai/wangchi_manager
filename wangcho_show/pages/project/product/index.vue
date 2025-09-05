@@ -10,10 +10,10 @@
 			<view v-if="!pageLoading" class="productTypeContainer">
 				<view class="item">
 					<view class="name">风格:</view>
-					<u-tabs style="width: 70%;" ref="productTypeRootRef" :list="productTypeRoot" :lineColor="'#606266'" @change="productTypeRootChange" />
+					<u-tabs class="tabs" ref="productTypeRootRef" :list="productTypeRoot" :lineColor="'#606266'" @change="productTypeRootChange" />
 					<view class="detail" @tap="detailShow=!detailShow">
 						<span>{{detailShow ? '折叠' : '展开'}}</span>
-						<u-icon :name="detailShow ? 'arrow-up' : 'arrow-down'" size="20"></u-icon>
+						<u-icon :name="detailShow ? 'arrow-up' : 'arrow-down'" size="18"></u-icon>
 					</view>
 				</view>
 
@@ -119,8 +119,8 @@
 			query.value.isAsc = 'desc'
 			query.value.orderByColumn = 'price'
 		} else {
-			query.value.isAsc = 'desc'
-			query.value.orderByColumn = 'createTime'
+			query.value.isAsc = 'asc,desc'
+			query.value.orderByColumn = 'orderNum,createTime'
 		}
 		query.value.name = query.value.name ? query.value.name : ""
 		proxy.refs.uWaterfall.clear()
@@ -153,20 +153,24 @@
 	.productTypeContainer {}
 
 	::v-deep .u-wrap {
-		background-color: #ffffff00;
+		background-color: #ffffff00 !important;
 	}
 
 	::v-deep .u-tabs__wrapper__nav__item {
-		padding: 0 6px;
+		padding: 0 6px !important;
 	}
 
 	::v-deep .u-tabs__wrapper__nav__line {
 		transform: translate(11px);
 	}
 
+	::v-deep .u-tabs {
+		width: 70%;
+	}
+
 	.productTypeContainer .item {
 		padding-left: 8px;
-		// position: relative;
+		position: relative;
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
@@ -176,15 +180,21 @@
 		display: flex;
 		min-width: 60px;
 		color: #606266;
-		font-size: 14px;
-		width: 15%;
+		font-size: 13px;
 		justify-content: flex-end;
+		position: absolute;
+		top: 30%;
+		right: 10px;
 	}
 
 	.productTypeContainer .name {
 		color: #606266;
 		font-weight: 550;
 	}
+
+	// .productTypeContainer .tabs {
+	// 	width: 70% !important;
+	// }
 
 	.productContainer {
 		border-radius: 8px;

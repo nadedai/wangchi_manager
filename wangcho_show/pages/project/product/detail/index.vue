@@ -29,7 +29,7 @@
 			</view>
 		</u-popup>
 
-		<view class="attr-container" v-if="data.attrs && data.attrs.length > 0">
+		<view @click="popShow = true" class="attr-container" v-if="data.attrs && data.attrs.length > 0">
 			<div class="prefix-text"><u-icon name="order" color="gray" size="24" /></div>
 			<div class="scroll-container">
 				<div class="grid">
@@ -40,7 +40,7 @@
 				</div>
 			</div>
 			<div class="detail-btn">
-				<u-icon name="arrow-right" color="gray" size="15" @click="popShow = true" />
+				<u-icon name="arrow-right" color="gray" size="15" />
 			</div>
 		</view>
 

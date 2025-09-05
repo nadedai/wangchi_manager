@@ -108,8 +108,4 @@
 		background-color: #ffffff;
 		position: relative;
 	}
-
-	::v-deep .u-wrap {
-		background-color: #ffffff00;
-	}
 </style>
