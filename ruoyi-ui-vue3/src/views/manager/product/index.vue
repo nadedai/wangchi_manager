@@ -95,6 +95,27 @@
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="是否置顶" prop="enabled">
+                            <el-radio-group v-model="form.isTop" @change="topChange">
+                                <el-radio :label="true">置顶</el-radio>
+                                <el-radio :label="false">非置顶</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12" v-if="form.isTop">
+                        <el-form-item label="排序值" prop="orderNum">
+                            <template #label>
+                                <span>
+                                    <el-tooltip content="值越小 排序越在前" placement="top">
+                                        <el-icon><question-filled /></el-icon>
+                                    </el-tooltip>
+                                </span>
+                                显示排序
+                            </template>
+                            <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
+                        </el-form-item>
+                    </el-col>
                     <el-col :span="24">
                         <el-form-item label="产品图片" prop="picUrl">
                             <imageUpload v-model="form.picUrl" :limit="1" />
@@ -199,8 +220,8 @@ const data = reactive({
         goodsSn: undefined,
         name: undefined,
         productType: undefined,
-        isAsc: "desc",
-        orderByColumn: "createTime"
+        isAsc: "asc,desc",
+        orderByColumn: "orderNum,createTime"
     },
     rules: {
         goodsSn: [{ required: true, message: "产品编号不能为空", trigger: "blur" }],
@@ -258,6 +279,8 @@ function reset() {
         price: undefined,
         isNew: false,
         isSale: true,
+        orderNum: 9999,
+        isTop: false,
         picUrl: undefined,
         gallery: undefined,
         productType: undefined,
@@ -363,6 +386,7 @@ function handleUpdate(item) {
         form.value = res.data;
         form.value.productType = res.data.productType.split(",")
         open.value = true;
+        form.value.isTop = form.value.orderNum != 9999
         title.value = "修改产品";
     })
 }
@@ -411,6 +435,10 @@ function handleAddAttr() {
     titleAttr.value = '添加产品参数'
     openAttr.value = true
     resetAttr()
+}
+
+function topChange(e) {
+    form.value.orderNum = e ? 0 : 9999
 }
 
 getList()

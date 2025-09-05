@@ -3,12 +3,12 @@
 		<u-loading-page :loading="pageLoading"></u-loading-page>
 		<swiper indicator-dots="true" indicator-active-color="#808080" style="height: 400px; width: 100%;" class="swiper" circular="true">
 			<swiper-item v-for="item in imgs">
-				<image style="height: 100%; width: 100%;" mode="aspectFill" :src="item" @click="previewImage" />
+				<image style="height: 100%; width: 100%;" mode="aspectFit" :src="item" @click="previewImage" />
 			</swiper-item>
 		</swiper>
 		<view>
 			<view style="font-size: 18px;font-weight: 800;margin: 8px;">￥{{data.price}}</view>
-			<view style="margin: 8px;">{{data.name}}</view>
+			<view style="margin: 8px;font-weight: 600">{{data.name}}</view>
 		</view>
 		<u-gap height="6" bgColor="rgb(234 234 234)" />
 
@@ -59,10 +59,10 @@
 					<button class="share-btn" open-type="share"></button>
 				</view>
 			</view>
-			<view class="btn">
+			<!-- <view class="btn">
 				立即咨询
 				<button class="share-btn" open-type="contact"></button>
-			</view>
+			</view> -->
 		</view>
 	</view>
 

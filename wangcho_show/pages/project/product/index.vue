@@ -10,7 +10,7 @@
 			<view v-if="!pageLoading" class="productTypeContainer">
 				<view class="item">
 					<view class="name">风格:</view>
-					<u-tabs ref="productTypeRootRef" :list="productTypeRoot" :lineColor="'#606266'" @change="productTypeRootChange" />
+					<u-tabs style="width: 70%;" ref="productTypeRootRef" :list="productTypeRoot" :lineColor="'#606266'" @change="productTypeRootChange" />
 					<view class="detail" @tap="detailShow=!detailShow">
 						<span>{{detailShow ? '折叠' : '展开'}}</span>
 						<u-icon :name="detailShow ? 'arrow-up' : 'arrow-down'" size="20"></u-icon>
@@ -32,7 +32,7 @@
 		<u-waterfall v-model="productData" ref="uWaterfall" add-time="100">
 			<template #default="{ columnList, columnIndex }">
 				<view class="productContainer" v-for="(item, index) in columnList" :key="index" @click="productClick(item)">
-					<u-lazy-load threshold="0" height="150" border-radius="10" loading-img='' :is-effect="false" :image="item.picRealUrl + '?x-oss-process=image/resize,p_20'" index="index" />
+					<u-lazy-load mode="aspectFit" threshold="0" height="180" border-radius="10" loading-img='' :is-effect="false" :image="item.picRealUrl + '?x-oss-process=image/resize,p_20'" index="index" />
 					<view class="title"><span class="new-tag" v-if="item.isNew">NEW</span>{{ item.name }}</view>
 					<view class="price"><span style="font-size: 28rpx;">¥</span><span style="font-weight: 600">{{ item.price }}</span></view>
 				</view>
@@ -152,20 +152,33 @@
 <style scoped lang="scss">
 	.productTypeContainer {}
 
+	::v-deep .u-wrap {
+		background-color: #ffffff00;
+	}
+
+	::v-deep .u-tabs__wrapper__nav__item {
+		padding: 0 6px;
+	}
+
+	::v-deep .u-tabs__wrapper__nav__line {
+		transform: translate(11px);
+	}
+
 	.productTypeContainer .item {
 		padding-left: 8px;
-		position: relative;
+		// position: relative;
 		display: flex;
 		align-items: center;
+		flex-wrap: wrap;
 	}
 
 	.productTypeContainer .detail {
-		position: absolute;
-		top: 35%;
-		right: 10px;
 		display: flex;
+		min-width: 60px;
 		color: #606266;
 		font-size: 14px;
+		width: 15%;
+		justify-content: flex-end;
 	}
 
 	.productTypeContainer .name {
