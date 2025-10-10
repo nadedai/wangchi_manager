@@ -1,10 +1,10 @@
 <template>
 	<view>
 		<u-loading-page :loading="pageLoading"></u-loading-page>
-
 		<image style="height: 30vh; width: 100%;" mode="aspectFill" :src="photoCoverImg" />
 		<u-sticky bgColor="#fff">
 			<u-tabs v-if="!pageLoading" :list="productList" @change="photoTypeChange" :lineColor="'#606266'" :activeStyle="{
+				top:0,
 		        color: '#303133',
 		        fontWeight: 'bold',
 		        transform: 'scale(1.05)'
@@ -108,5 +108,9 @@
 		margin: 3px;
 		background-color: #ffffff;
 		position: relative;
+	}
+
+	::v-deep .u-sticky {
+		top: 0 !important;
 	}
 </style>
