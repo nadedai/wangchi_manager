@@ -1,8 +1,9 @@
 <template>
 	<view>
 		<u-loading-page :loading="pageLoading"></u-loading-page>
+
+		<image style="height: 30vh; width: 100%;" mode="aspectFill" :src="photoCoverImg" />
 		<u-sticky bgColor="#fff">
-			<image style="height: 30vh; width: 100%;" mode="aspectFill" :src="photoCoverImg" />
 			<u-tabs v-if="!pageLoading" :list="productList" @change="photoTypeChange" :lineColor="'#606266'" :activeStyle="{
 		        color: '#303133',
 		        fontWeight: 'bold',
