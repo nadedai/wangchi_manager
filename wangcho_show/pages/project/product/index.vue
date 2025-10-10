@@ -232,4 +232,8 @@
 		letter-spacing: 0.5px;
 		vertical-align: middle;
 	}
+
+	::v-deep .u-sticky {
+		top: 0 !important;
+	}
 </style>
