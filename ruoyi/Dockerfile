@@ -14,9 +14,4 @@ EXPOSE ${SERVER_PORT}
 
 ADD ./ruoyi.jar ./app.jar
 
-ENTRYPOINT ["java", \
-            "-Djava.security.egd=file:/dev/./urandom", \
-            "-Dserver.port=${SERVER_PORT}", \
-            "-jar", "app.jar", \
-            "--spring.config.additional-location=./config/"
-            ]
+ENTRYPOINT 'java' '-Djava.security.egd=file:/dev/./urandom' '-Dserver.port=${SERVER_PORT}' '-jar' 'app.jar' '--spring.config.additional-location=./config/'

@@ -59,3 +59,10 @@ export function getPhotoCover() {
 		method: 'GET',
 	})
 }
+
+export function getShareCover() {
+	return request({
+		url: '/index/shareCover',
+		method: 'GET',
+	})
+}
