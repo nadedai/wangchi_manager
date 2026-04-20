@@ -28,8 +28,9 @@
 <script setup>
 	import imgListView from './components/img-list-view.vue'
 	import { ref, getCurrentInstance } from 'vue'
-	import { onLoad, onReachBottom } from '@dcloudio/uni-app'
+	import { onLoad, onReachBottom, onShareAppMessage } from '@dcloudio/uni-app'
 	import { photoTypeList, photoList, listOssByIds, getPhotoCover } from '@/api/api.js'
+	import { share } from '@/utils/common.js'
 	const proxy = getCurrentInstance()
 	const curItem = ref()
 	const productList = ref([])
@@ -97,6 +98,10 @@
 		q.value.pageNum = q.value.pageNum + 1
 		loadStatus.value = 'loading';
 		getPhotoList();
+	})
+
+	onShareAppMessage(() => {
+		return share('/pages/photo/index')
 	})
 	getPhotoType()
 	getPhotoCoverImg()

@@ -45,7 +45,8 @@
 <script setup>
 	import { ref, nextTick, getCurrentInstance } from 'vue'
 	import { productTypeList, productList, listOssByIds } from '@/api/api.js'
-	import { onReachBottom } from '@dcloudio/uni-app'
+	import { onReachBottom, onShareAppMessage } from '@dcloudio/uni-app'
+	import { share } from '@/utils/common.js'
 	const productData = ref([])
 	const productTypeRoot = ref([])
 	const productTypeChildren = ref([{ name: "全部" }])
@@ -146,6 +147,10 @@
 		productTypeRoot.value.push(...res.data)
 		pageLoading.value = false
 		productTypeChange()
+	})
+
+	onShareAppMessage(() => {
+		return share('/pages/project/product/index')
 	})
 </script>
 

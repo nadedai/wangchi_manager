@@ -89,7 +89,7 @@
 		return {
 			title: data.value.name,
 			path: `/pages/project/product/detail/index?id=${data.value.id}`,
-			imageUrl: data.value.picRealUrl
+			imageUrl: data.value.picRealUrl + '?x-oss-process=image/resize,p_20'
 		}
 	})
 

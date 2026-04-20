@@ -16,6 +16,8 @@
 <script setup>
 	import { getSwiperPhoto } from '@/api/api.js'
 	import { ref } from 'vue'
+	import { onShareAppMessage } from '@dcloudio/uni-app'
+	import { share } from '@/utils/common.js'
 
 	const imgs = ref([])
 
@@ -32,7 +34,9 @@
 			}
 		})
 	}
-
+	onShareAppMessage(() => {
+		return share('/pages/index/index')
+	})
 	getImgs()
 </script>
 
