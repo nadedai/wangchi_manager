@@ -14,6 +14,13 @@ export function getPhotoCover() {
     })
 }
 
+export function getShareCover() {
+    return request({
+        url: '/index/shareCover',
+        method: 'get',
+    })
+}
+
 export function setSwiperPhoto(params) {
     return request({
         url: '/index/swiperPhoto',
@@ -25,6 +32,14 @@ export function setSwiperPhoto(params) {
 export function setPhotoCover(params) {
     return request({
         url: '/index/photoCover',
+        method: 'put',
+        params
+    })
+}
+
+export function setShareCover(params) {
+    return request({
+        url: '/index/shareCover',
         method: 'put',
         params
     })

@@ -19,8 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ruoyi.wg.commom.Constants.PHOTO_COVER_KEY;
-import static com.ruoyi.wg.commom.Constants.SWIPER_PHOTO_KEY;
+import static com.ruoyi.wg.commom.Constants.*;
 
 
 /**
@@ -59,6 +58,18 @@ public class IndexController {
         return R.ok();
     }
 
+    @GetMapping("/shareCover")
+    @SaIgnore
+    public R<String> getShareCover(){
+        String s = sysConfigService.selectConfigByKey(SHARE_COVER_KEY);
+        if(StringUtils.isNotEmpty(s)){
+            return R.ok(sysOssService.listByIds(Arrays.stream(s.split(","))
+                    .map(Long::parseLong).collect(Collectors.toList())).stream()
+                .map(SysOssVo::getUrl).collect(Collectors.joining(",")));
+        }
+        return R.ok();
+    }
+
     @PutMapping("/swiperPhoto")
     public R<Void> setSwiperPhoto(String imgs){
         SysConfig config = sysConfigService.selectByKey(SWIPER_PHOTO_KEY);
@@ -70,6 +81,14 @@ public class IndexController {
     @PutMapping("/photoCover")
     public R<Void> setPhotoCover(String img){
         SysConfig config = sysConfigService.selectByKey(PHOTO_COVER_KEY);
+        config.setConfigValue(img);
+        sysConfigService.updateConfig(config);
+        return R.ok();
+    }
+
+    @PutMapping("/shareCover")
+    public R<Void> setshareCover(String img){
+        SysConfig config = sysConfigService.selectByKey(SHARE_COVER_KEY);
         config.setConfigValue(img);
         sysConfigService.updateConfig(config);
         return R.ok();

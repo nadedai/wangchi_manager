@@ -12,4 +12,5 @@ import lombok.experimental.UtilityClass;
 public class Constants {
     public static String SWIPER_PHOTO_KEY = "swiper.photo";
     public static String PHOTO_COVER_KEY = "photo.cover";
+    public static String SHARE_COVER_KEY = "share.cover";
 }

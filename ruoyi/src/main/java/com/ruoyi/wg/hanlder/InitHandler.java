@@ -22,6 +22,7 @@ public class InitHandler implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         initSwiper();
         initPhotoCover();
+        initShareCover();
     }
 
     private void  initSwiper(){
@@ -39,6 +40,16 @@ public class InitHandler implements ApplicationRunner {
         config.setConfigName("图册封面配置");
         config.setConfigType("Y");
         config.setConfigKey(Constants.PHOTO_COVER_KEY);
+        if(sysConfigService.checkConfigKeyUnique(config)){
+            sysConfigService.insertConfig(config);
+        }
+    }
+
+    private void  initShareCover(){
+        SysConfig config = new SysConfig();
+        config.setConfigName("分享封面配置");
+        config.setConfigType("Y");
+        config.setConfigKey(Constants.SHARE_COVER_KEY);
         if(sysConfigService.checkConfigKeyUnique(config)){
             sysConfigService.insertConfig(config);
         }
